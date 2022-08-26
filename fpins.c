@@ -7,8 +7,6 @@
 //  Made in Taiwan.
 
 #include "fpins.h"
-#include "ssse3_priv.h"
-#include <asm/fpu/internal.h>
 
 /**********************************************/
 /**  IMM8 or MXCSR Rounding Control          **/
@@ -42,14 +40,12 @@ int getmxcsr(void) {
 
 float round_fp32(float fp32, int rc)
 {
-	kernel_fpu_begin();
     switch(rc) {
         case 0: fp32 = round_sf(fp32); break;
         case 1: fp32 = floor_sf(fp32); break;
         case 2: fp32 = ceil_sf(fp32); break;
         case 3: fp32 = trunc_sf(fp32); break;
     }
-    kernel_fpu_end();
     return fp32;
 }
 
@@ -66,7 +62,6 @@ double round_fp64(double fp64, int rc)
 
 
 float round_sf(float fp32) {
-	kernel_fpu_begin();
     if ( isValidNumber_f32(fp32) ) {
         if ( fp32 > 0 ) {
             fp32 = fp32 + 0.5;
@@ -78,12 +73,10 @@ float round_sf(float fp32) {
     } else {
         fp32 = SNanToQNaN_f32(fp32);
     }
-    kernel_fpu_end();
     return fp32;
 }
 
 float floor_sf(float fp32) {
-	kernel_fpu_begin();
     if ( isValidNumber_f32(fp32) ) {
         if ( fp32 > 0 ) {
             fp32 = (float)((int32_t)fp32);
@@ -94,12 +87,10 @@ float floor_sf(float fp32) {
     } else {
         fp32 = SNanToQNaN_f32(fp32);
     }
-    kernel_fpu_end();
     return fp32;
 }
 
 float ceil_sf(float fp32) {
-	kernel_fpu_begin();
     if ( isValidNumber_f32(fp32) ) {
         if ( fp32 > 0 ) {
             fp32 = fp32 + 1;
@@ -110,12 +101,10 @@ float ceil_sf(float fp32) {
     } else {
         fp32 = SNanToQNaN_f32(fp32);
     }
-    kernel_fpu_end();
     return fp32;
 }
 
 float trunc_sf(float fp32) {
-	kernel_fpu_begin();
     if ( isValidNumber_f32(fp32) ) {
         if ( fp32 > 0 ) {
             fp32 = (float)((int32_t)fp32);
@@ -125,12 +114,10 @@ float trunc_sf(float fp32) {
     } else {
         fp32 = SNanToQNaN_f32(fp32);
     }
-    kernel_fpu_end();
     return fp32;
 }
 
 float sqrt_sf(float fp32) {
-	kernel_fpu_begin();
     int i = 100;
     float a = fp32;  //IN
     float x = a / 2; //OUT
@@ -139,12 +126,10 @@ float sqrt_sf(float fp32) {
         x = (x + a / x) / 2;
     }
     
-    kernel_fpu_end();
     return x;
 }
 
 double round_df(double fp64) {
-	kernel_fpu_begin();
     if ( isValidNumber_f64(fp64) ) {
         if ( fp64 > 0 ) {
             fp64 = fp64 + 0.5;
@@ -156,12 +141,10 @@ double round_df(double fp64) {
     } else {
         fp64 = SNanToQNaN_f64(fp64);
     }
-    kernel_fpu_end();
     return fp64;
 }
 
 double floor_df(double fp64) {
-	kernel_fpu_begin();
     if ( isValidNumber_f64(fp64) ) {
         if ( fp64 > 0 ) {
             fp64 = (double)((int64_t)fp64);
@@ -172,12 +155,10 @@ double floor_df(double fp64) {
     } else {
         fp64 = SNanToQNaN_f64(fp64);
     }
-    kernel_fpu_end();
     return fp64;
 }
 
 double ceil_df(double fp64) {
-	kernel_fpu_begin();
     if ( isValidNumber_f64(fp64) ) {
         if ( fp64 > 0 ) {
             fp64 = fp64 + 1;
@@ -188,13 +169,11 @@ double ceil_df(double fp64) {
     } else {
         fp64 = SNanToQNaN_f64(fp64);
     }
-    kernel_fpu_end();
     return fp64;
 }
 
 double trunc_df(double fp64) {
- 	kernel_fpu_begin();
-   if ( isValidNumber_f64(fp64) ) {
+    if ( isValidNumber_f64(fp64) ) {
         if ( fp64 > 0 ) {
             fp64 = (double)((int64_t)fp64);
         } else {
@@ -203,13 +182,11 @@ double trunc_df(double fp64) {
     } else {
         fp64 = SNanToQNaN_f64(fp64);
     }
-    kernel_fpu_end();
     return fp64;
 }
 
 double sqrt_df(double fp64) {
- 	kernel_fpu_begin();
-   int i = 100;
+    int i = 100;
     double a = fp64;  //IN
     double x = a / 2; //OUT
     
@@ -217,14 +194,12 @@ double sqrt_df(double fp64) {
         x = (x + a / x) / 2;
     }
     
-    kernel_fpu_end();
     return x;
 }
 
 /****************************************************/
 int isValidNumber_f32(float fp32) {
-	kernel_fpu_begin();
-    sse_reg_t TMP;
+    XMM TMP;
     TMP.fa32[0] = fp32;
     int32_t val = TMP.a32[0];
     
@@ -232,13 +207,11 @@ int isValidNumber_f32(float fp32) {
         return 0;
     }
     
-   kernel_fpu_end();
-   return 1;
+    return 1;
 }
 
 int isValidNumber_f64(double fp64) {
-	kernel_fpu_begin();
-    sse_reg_t TMP;
+    XMM TMP;
     TMP.fa64[0] = fp64;
     int64_t val = TMP.a64[0];
     
@@ -247,13 +220,11 @@ int isValidNumber_f64(double fp64) {
         return 0;
     }
     
-    kernel_fpu_end();
     return 1;
 }
 
 float SNanToQNaN_f32(float fp32) {
-	kernel_fpu_begin();
-    sse_reg_t TMP;
+    XMM TMP;
     int32_t retval;
     
     TMP.fa32[0] = fp32;
@@ -271,13 +242,11 @@ float SNanToQNaN_f32(float fp32) {
             fp32 = TMP.fa32[0];
         }
     }
-    kernel_fpu_end();
     return fp32;
 }
 
 double SNanToQNaN_f64(double fp64) {
-	kernel_fpu_begin();
-    sse_reg_t TMP;
+    XMM TMP;
     int64_t retval;
     
     TMP.fa64[0] = fp64;
@@ -299,7 +268,7 @@ double SNanToQNaN_f64(double fp64) {
 }
 
 int isNaN_f64(double fp64) {
-    sse_reg_t tmp;
+    XMM tmp;
     tmp.fa64[0] = fp64;
     int64_t val = tmp.a64[0];
     
@@ -312,8 +281,7 @@ int isNaN_f64(double fp64) {
     return 0;
 }
 int isNaN_f32(float fp32) {
- 	kernel_fpu_begin();
-   sse_reg_t tmp;
+    XMM tmp;
     tmp.fa32[0] = fp32;
     int32_t val = tmp.a32[0];
     
@@ -323,7 +291,6 @@ int isNaN_f32(float fp32) {
         }
     }
     
-    kernel_fpu_end();
     return 0;
 }
 

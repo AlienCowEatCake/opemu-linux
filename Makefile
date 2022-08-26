@@ -1,13 +1,29 @@
 KERNEL_PATH ?= /lib/modules/$(shell uname -r)/build
 
-MODULE_NAME  = op_emu
+MODULE_NAME  = opemu
 
-$(MODULE_NAME)-objs := trap_hook.o opemu.o ssse3.o sse3.o opemu_math.o sse42.o sse41.o fpins.o libudis86/udis86.o libudis86/syn.o libudis86/decode.o libudis86/itab.o libudis86/syn-intel.o libudis86/syn-att.o
-
+$(MODULE_NAME)-objs := trap_hook.o \
+                       optrap.o \
+                       aesins.o \
+                       pcmpstr.o \
+                       fpins.o \
+                       half.o \
+                       aes.o \
+                       avx.o \
+                       vgather.o \
+                       fma.o \
+                       f16c.o \
+                       bmi.o \
+                       vsse.o \
+                       vsse2.o \
+                       vsse3.o \
+                       vssse3.o \
+                       vsse41.o \
+                       vsse42.o
 
 obj-m += $(MODULE_NAME).o
 
-KBUILD_CFLAGS += -DDEBUG -g -O2 -march=native -mtune=native -mmmx -msse -msse2
+KBUILD_CFLAGS += -g -O2 -march=native -mtune=native -mmmx -msse -msse2
 
 export KBUILD_CFLAGS
 

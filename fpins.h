@@ -9,8 +9,7 @@
 #ifndef fpins_h
 #define fpins_h
 
-#include "opemu.h"
-#include "ssse3_priv.h"
+#include "optrap.h"
 
 int getmxcsr(void);
 

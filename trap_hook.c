@@ -19,7 +19,7 @@
 #include <linux/uaccess.h>
 #include <linux/version.h>
 
-#include "opemu.h"
+#include "optrap.h"
 
 MODULE_DESCRIPTION("Intel Instruction set Emulation");
 MODULE_AUTHOR("Meowthra");
@@ -237,12 +237,12 @@ static void fh_do_error_trap(struct pt_regs *regs, long error_code, char *str, u
 /*
  * x86_64 kernels have a special naming convention for syscall entry points in newer kernels.
  * That's what you end up with if an architecture has 3 (three) ABIs for system calls.
-
+ */
 #ifdef PTREGS_SYSCALL_STUBS
 #define SYSCALL_NAME(name) ("__x64_" name)
-#else */
+#else
 #define SYSCALL_NAME(name) (name)
-//#endif
+#endif
 
 #define HOOK(_name, _function, _original)   \
     {                   \
