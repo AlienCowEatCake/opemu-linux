@@ -18,6 +18,7 @@
 #include <linux/slab.h>
 #include <linux/uaccess.h>
 #include <linux/version.h>
+#include <linux/kprobes.h>
 
 #include "optrap.h"
 
@@ -57,9 +58,22 @@ struct ftrace_hook {
     struct ftrace_ops ops;
 };
 
+
+
 static int fh_resolve_hook_address(struct ftrace_hook *hook)
 {
-    hook->address = kallsyms_lookup_name(hook->name);
+    struct kprobe kp;
+    unsigned long addr;
+
+    memset(&kp, 0, sizeof(struct kprobe));
+    kp.symbol_name = "kallsyms_lookup_name";
+    if (register_kprobe(&kp) < 0) {
+        return 0;
+    }
+    hook->address = (unsigned long)kp.addr;
+    unregister_kprobe(&kp);
+
+//    hook->address = lookup_kallsyms_lookup_name(hook->name);
 
     if (!hook->address) {
         pr_debug("unresolved symbol: %s\n", hook->name);
