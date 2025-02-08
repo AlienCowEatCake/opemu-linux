@@ -107,28 +107,28 @@ inline void _sstore_gpr32 (ud_type_t n, uint32_t *where) {
 	struct pt_regs *regs;
 	switch (n) {
 		case UD_R_EAX:
-			*where = &regs->ax;
+			*where = (uint32_t) &regs->ax;
 			break;
 		case UD_R_ECX:
-			*where = &regs->cx;
+			*where = (uint32_t) &regs->cx;
 			break;
 		case UD_R_EDX:
-			*where = &regs->dx;
+			*where = (uint32_t) &regs->dx;
 			break;
 		case UD_R_EBX:
-			*where = &regs->bx;
+			*where = (uint32_t) &regs->bx;
 			break;
 		case UD_R_ESP:
-			*where = &regs->sp;
+			*where = (uint32_t) &regs->sp;
 			break;
 		case UD_R_EBP:
-			*where = &regs->bp;
+			*where = (uint32_t) &regs->bp;
 			break;
 		case UD_R_ESI:
-			*where = &regs->si;
+			*where = (uint32_t) &regs->si;
 			break;
 		case UD_R_EDI:
-			*where = &regs->di;
+			*where = (uint32_t) &regs->di;
 			break;
 	}
 }
@@ -137,28 +137,28 @@ inline void _sstore_gpr64 (ud_type_t n, uint64_t *where) {
 	struct pt_regs *regs;
 	switch (n) {
 		case UD_R_RAX:
-			*where = &regs->ax;
+			*where = (uint64_t) &regs->ax;
 			break;
 		case UD_R_RCX:
-			*where = &regs->cx;
+			*where = (uint64_t) &regs->cx;
 			break;
 		case UD_R_RDX:
-			*where = &regs->dx;
+			*where = (uint64_t) &regs->dx;
 			break;
 		case UD_R_RBX:
-			*where = &regs->bx;
+			*where = (uint64_t) &regs->bx;
 			break;
 		case UD_R_RSP:
-			*where = &regs->sp;
+			*where = (uint64_t) &regs->sp;
 			break;
 		case UD_R_RBP:
-			*where = &regs->bp;
+			*where = (uint64_t) &regs->bp;
 			break;
 		case UD_R_RSI:
-			*where = &regs->si;
+			*where = (uint64_t) &regs->si;
 			break;
 		case UD_R_RDI:
-			*where = &regs->di;
+			*where = (uint64_t) &regs->di;
 			break;
 	}
 }
@@ -274,7 +274,7 @@ int ssse3_grab_operands(ssse3_t *ssse3_obj)
 
 			if (ssse3_obj->op_obj->ring0)
 				ssse3_obj->src.uint64[0] = * ((uint64_t*) (address));
-			else copy_from_user((char*) &ssse3_obj->src.uint64[0], address, 8);
+			else copy_from_user((char*) &ssse3_obj->src.uint64[0], (char*) address, 8);
 		}
 		else if (ssse3_obj->udo_src->size == 128) {
 			// m128 load
@@ -298,7 +298,7 @@ int ssse3_grab_operands(ssse3_t *ssse3_obj)
 
 			if (ssse3_obj->op_obj->ring0)
 				ssse3_obj->src.uint128 = * ((__uint128_t*) (address));
-			else copy_from_user((char*) &ssse3_obj->src.uint128, address, 16);
+			else copy_from_user((char*) &ssse3_obj->src.uint128, (char*) address, 16);
 		}
 		else {
 			printk("src mem else");
@@ -619,7 +619,7 @@ void palignr (ssse3_t *this)
 		shiftp = (uint8_t*) &temp1[0];
 		shiftp += imm;
         shiftpaddr = (uint64_t)shiftp;
-		this->res.uint128 = ((__uint128_t*) shiftpaddr);
+		this->res.uint128 = (__uint128_t) ((__uint128_t*) shiftpaddr);
 	}
 }
 

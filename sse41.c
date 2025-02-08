@@ -5,8 +5,8 @@ void blendpd(ssse3_t *this)
 {
 	uint8_t imm = this->udo_imm->lval.ubyte;
     
-	uint64_t* temp1 = this->src.uint128;
-	uint64_t* temp2 = this->dst.uint128;
+	uint64_t* temp1 = (uint64_t*) this->src.uint128;
+	uint64_t* temp2 = (uint64_t*) this->dst.uint128;
     
 	if (imm & 1) {
 		temp2 = temp1;
@@ -14,7 +14,7 @@ void blendpd(ssse3_t *this)
 	if ((imm & 2) > 1) {
 		temp2[1] = temp1[1];
 	}
-	this->res.uint128 = ((__uint128_t*) temp2);
+	this->res.uint128 = (__uint128_t) ((__uint128_t*) temp2);
 
 }
 
@@ -22,8 +22,8 @@ void blendps(ssse3_t *this)
 {
 	uint8_t imm = this->udo_imm->lval.ubyte;
     
-	uint32_t* temp1 = this->src.uint128;
-	uint32_t* temp2 = this->dst.uint128;
+	uint32_t* temp1 = (uint32_t*) this->src.uint128;
+	uint32_t* temp2 = (uint32_t*) this->dst.uint128;
     
 	if (imm & 1) { //1st bit imm != 0
 		temp2 = temp1;
@@ -37,7 +37,7 @@ void blendps(ssse3_t *this)
 	if ((imm & 8) > 7) { //4th bit imm != 0
 		temp2[3] = temp1[3];
 	}
-	this->res.uint128 = ((__uint128_t*) temp2);
+	this->res.uint128 = (__uint128_t) ((__uint128_t*) temp2);
 
 }
 
@@ -45,8 +45,8 @@ void pblendw(ssse3_t *this)
 {
 	uint8_t imm = this->udo_imm->lval.ubyte;
     
-	uint16_t* temp1 = this->src.uint128;
-	uint16_t* temp2 = this->dst.uint128;
+	uint16_t* temp1 = (uint16_t*) this->src.uint128;
+	uint16_t* temp2 = (uint16_t*) this->dst.uint128;
     
 	if (imm & 1) { //1st bit imm != 0
 		temp2 = temp1;
@@ -72,14 +72,14 @@ void pblendw(ssse3_t *this)
 	if ((imm & 128) > 127) {
 		temp2[7] = temp1[7];
 	}
-	this->res.uint128 = ((__uint128_t*) temp2);
+	this->res.uint128 = (__uint128_t) ((__uint128_t*) temp2);
 
 }
 
 void pmovsxbw(ssse3_t *this)
 {
-	int8_t* temp1 = this->src.uint128;
-	int16_t* temp2 = this->dst.uint128;
+	int8_t* temp1 = (int8_t*) this->src.uint128;
+	int16_t* temp2 = (int16_t*) this->dst.uint128;
 	 
 
 	temp2[0] = temp1[0] > 127 ? 0xFF00 | temp1[0] : temp1[0];
@@ -91,73 +91,73 @@ void pmovsxbw(ssse3_t *this)
 	temp2[6] = temp1[6] > 127 ? 0xFF00 | temp1[6] : temp1[6];
 	temp2[7] = temp1[7] > 127 ? 0xFF00 | temp1[7] : temp1[7];
 	
-	this->res.uint128 = ((__uint128_t*) temp2);
+	this->res.uint128 = (__uint128_t) ((__uint128_t*) temp2);
 }
 
 void pmovsxbd(ssse3_t *this)
 {
-	uint8_t* temp1 = this->src.uint128;
-	uint32_t* temp2 = this->dst.uint128;
+	uint8_t* temp1 = (uint8_t*) this->src.uint128;
+	uint32_t* temp2 = (uint32_t*) this->dst.uint128;
 	 
 	temp2[0] = temp1[0] > 127 ? 0xFFFF00 | temp1[0] : (uint32_t) temp1[0];
 	temp2[1] = temp1[1] > 127 ? 0xFFFF00 | temp1[1] : (uint32_t) temp1[1];
 	temp2[2] = temp1[2] > 127 ? 0xFFFF00 | temp1[2] : (uint32_t) temp1[2];
 	temp2[3] = temp1[3] > 127 ? 0xFFFF00 | temp1[3] : (uint32_t) temp1[3];
 
-	this->res.uint128 = ((__uint128_t*) temp2);
+	this->res.uint128 = (__uint128_t) ((__uint128_t*) temp2);
 }
 
 void pmovsxbq(ssse3_t *this)
 {
-	uint8_t* temp1 = this->src.uint128;
-	uint64_t* temp2 = this->dst.uint128;
+	uint8_t* temp1 = (uint8_t*) this->src.uint128;
+	uint64_t* temp2 = (uint64_t*) this->dst.uint128;
 	 
 	temp2[0] = temp1[0] > 127 ? 0xFFFFFFFFFFFFFF00 | temp1[0] : (uint64_t) temp1[0];
 	temp2[1] = temp1[1] > 127 ? 0xFFFFFFFFFFFFFF00 | temp1[1] : (uint64_t) temp1[1];
 
-	this->res.uint128 = ((__uint128_t*) temp2);
+	this->res.uint128 = (__uint128_t) ((__uint128_t*) temp2);
 }
 
 void pmovsxwd(ssse3_t *this)
 {
-	uint16_t* temp1 = this->src.uint128;
-	uint32_t* temp2 = this->dst.uint128;
+	uint16_t* temp1 = (uint16_t*) this->src.uint128;
+	uint32_t* temp2 = (uint32_t*) this->dst.uint128;
 	 
 	temp2[0] = temp1[0] > 32767 ? 0xFFFF0000 | temp1[0] : (uint32_t) temp1[0];
 	temp2[1] = temp1[1] > 32767 ? 0xFFFF0000 | temp1[1] : (uint32_t) temp1[1];
 	temp2[2] = temp1[2] > 32767 ? 0xFFFF0000 | temp1[2] : (uint32_t) temp1[2];
 	temp2[3] = temp1[3] > 32767 ? 0xFFFF0000 | temp1[3] : (uint32_t) temp1[3];
 
-	this->res.uint128 = ((__uint128_t*) temp2);
+	this->res.uint128 = (__uint128_t) ((__uint128_t*) temp2);
 }
 
 void pmovsxwq(ssse3_t *this)
 {
-	uint16_t* temp1 = this->src.uint128;
-	uint64_t* temp2 = this->dst.uint128;
+	uint16_t* temp1 = (uint16_t*) this->src.uint128;
+	uint64_t* temp2 = (uint64_t*) this->dst.uint128;
 	 
 	temp2[0] = temp1[0] > 32767 ? 0xFFFFFFFFFFFF0000 | temp1[0] : (uint64_t) temp1[0];
 	temp2[1] = temp1[1] > 32767 ? 0xFFFFFFFFFFFF0000 | temp1[1] : (uint64_t) temp1[1];
 
-	this->res.uint128 = ((__uint128_t*) temp2);
+	this->res.uint128 = (__uint128_t) ((__uint128_t*) temp2);
 }
 
 void pmovsxdq(ssse3_t *this)
 {
-	uint32_t* temp1 = this->src.uint128;
-	uint64_t* temp2 = this->dst.uint128;
+	uint32_t* temp1 = (uint32_t*) this->src.uint128;
+	uint64_t* temp2 = (uint64_t*) this->dst.uint128;
 	 
 	temp2[0] = temp1[0] > 0x7FFFFFFF ? 0xFFFFFFFF00000000 | temp1[0] : (uint64_t) temp1[0];
 	temp2[1] = temp1[1] > 0x7FFFFFFF ? 0xFFFFFFFF00000000 | temp1[1] : (uint64_t) temp1[1];
 
-	this->res.uint128 = ((__uint128_t*) temp2);
+	this->res.uint128 = (__uint128_t) ((__uint128_t*) temp2);
 }
 
 
 void pmovzxbw(ssse3_t *this)
 {
-	int8_t* temp1 = this->src.uint128;
-	int16_t* temp2 = this->dst.uint128;
+	int8_t* temp1 = (int8_t*) this->src.uint128;
+	int16_t* temp2 = (int16_t*) this->dst.uint128;
 	 
 
 	temp2[0] = temp1[0] > 127 ? 0xFF00 | temp1[0] : temp1[0];
@@ -169,66 +169,66 @@ void pmovzxbw(ssse3_t *this)
 	temp2[6] = temp1[6] > 127 ? 0xFF00 | temp1[6] : temp1[6];
 	temp2[7] = temp1[7] > 127 ? 0xFF00 | temp1[7] : temp1[7];
 	
-	this->res.uint128 = ((__uint128_t*) temp2);
+	this->res.uint128 = (__uint128_t) ((__uint128_t*) temp2);
 }
 
 void pmovzxbd(ssse3_t *this)
 {
-	uint8_t* temp1 = this->src.uint128;
-	uint32_t* temp2 = this->dst.uint128;
+	uint8_t* temp1 = (uint8_t*) this->src.uint128;
+	uint32_t* temp2 = (uint32_t*) this->dst.uint128;
 	 
 	temp2[0] = temp1[0] > 127 ? 0xFFFF00 | temp1[0] : (uint32_t) temp1[0];
 	temp2[1] = temp1[1] > 127 ? 0xFFFF00 | temp1[1] : (uint32_t) temp1[1];
 	temp2[2] = temp1[2] > 127 ? 0xFFFF00 | temp1[2] : (uint32_t) temp1[2];
 	temp2[3] = temp1[3] > 127 ? 0xFFFF00 | temp1[3] : (uint32_t) temp1[3];
 
-	this->res.uint128 = ((__uint128_t*) temp2);
+	this->res.uint128 = (__uint128_t) ((__uint128_t*) temp2);
 }
 
 void pmovzxbq(ssse3_t *this)
 {
-	uint8_t* temp1 = this->src.uint128;
-	uint64_t* temp2 = this->dst.uint128;
+	uint8_t* temp1 = (uint8_t*) this->src.uint128;
+	uint64_t* temp2 = (uint64_t*) this->dst.uint128;
 	 
 	temp2[0] = 0x00000000000000FF & temp1[0];
 	temp2[1] = 0x00000000000000FF & temp1[1];
 
-	this->res.uint128 = ((__uint128_t*) temp2);
+	this->res.uint128 = (__uint128_t) ((__uint128_t*) temp2);
 }
 
 void pmovzxwd(ssse3_t *this)
 {
-	uint16_t* temp1 = this->src.uint128;
-	uint32_t* temp2 = this->dst.uint128;
+	uint16_t* temp1 = (uint16_t*) this->src.uint128;
+	uint32_t* temp2 = (uint32_t*) this->dst.uint128;
 	 
 	temp2[0] = 0x0000FFFF & temp1[0];
 	temp2[1] = 0x0000FFFF & temp1[1];
 	temp2[2] = 0x0000FFFF & temp1[2];
 	temp2[3] = 0x0000FFFF & temp1[3];
 
-	this->res.uint128 = ((__uint128_t*) temp2);
+	this->res.uint128 = (__uint128_t) ((__uint128_t*) temp2);
 }
 
 void pmovzxwq(ssse3_t *this)
 {
-	uint16_t* temp1 = this->src.uint128;
-	uint64_t* temp2 = this->dst.uint128;
+	uint16_t* temp1 = (uint16_t*) this->src.uint128;
+	uint64_t* temp2 = (uint64_t*) this->dst.uint128;
 	 
 	temp2[0] = 0x000000000000FFFF & temp1[0];
 	temp2[1] = 0x000000000000FFFF & temp1[1];
 
-	this->res.uint128 = ((__uint128_t*) temp2);
+	this->res.uint128 = (__uint128_t) ((__uint128_t*) temp2);
 }
 
 void pmovzxdq(ssse3_t *this)
 {
-	uint32_t* temp1 = this->src.uint128;
-	uint64_t* temp2 = this->dst.uint128;
+	uint32_t* temp1 = (uint32_t*) this->src.uint128;
+	uint64_t* temp2 = (uint64_t*) this->dst.uint128;
 	 
 	temp2[0] = 0x00000000FFFFFFFF & temp1[0];
 	temp2[1] = 0x00000000FFFFFFFF & temp1[1];
 
-	this->res.uint128 = ((__uint128_t*) temp2);
+	this->res.uint128 = (__uint128_t) ((__uint128_t*) temp2);
 }
 
 void pextrb(ssse3_t *this)
