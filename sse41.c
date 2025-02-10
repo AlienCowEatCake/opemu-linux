@@ -384,3 +384,25 @@ void pinsrq(ssse3_t *this)
 	printk("OPEMU: pinsrq %s\n", ud_insn_asm(this->op_obj->ud_obj));
 
 }
+
+void pmaxud(ssse3_t *this)
+{
+	uint32_t* temp1 = this->src.uint32;
+	uint32_t* temp2 = this->dst.uint32;
+
+	this->res.int32[0] = (temp1[0] > temp2[0]) ? temp1[0] : temp2[0];
+	this->res.int32[1] = (temp1[1] > temp2[1]) ? temp1[1] : temp2[1];
+	this->res.int32[2] = (temp1[2] > temp2[2]) ? temp1[2] : temp2[2];
+	this->res.int32[3] = (temp1[3] > temp2[3]) ? temp1[3] : temp2[3];
+}
+
+void pminud(ssse3_t *this)
+{
+	uint32_t* temp1 = this->src.uint32;
+	uint32_t* temp2 = this->dst.uint32;
+
+	this->res.int32[0] = (temp1[0] < temp2[0]) ? temp1[0] : temp2[0];
+	this->res.int32[1] = (temp1[1] < temp2[1]) ? temp1[1] : temp2[1];
+	this->res.int32[2] = (temp1[2] < temp2[2]) ? temp1[2] : temp2[2];
+	this->res.int32[3] = (temp1[3] < temp2[3]) ? temp1[3] : temp2[3];
+}

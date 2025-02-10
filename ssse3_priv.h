@@ -183,6 +183,8 @@ inline void ptest	(ssse3_t*);
 inline void pinsrb	(ssse3_t*);
 inline void pinsrd	(ssse3_t*);
 inline void pinsrq	(ssse3_t*);
+inline void pmaxud	(ssse3_t*);
+inline void pminud	(ssse3_t*);
 
 
 /*** SSE4.2 TODO move this somewhere else ***/

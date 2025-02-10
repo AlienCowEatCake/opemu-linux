@@ -392,6 +392,8 @@ int op_sse3x_run(op_t *op_obj)
     case UD_Ipinsrb: opf = pinsrb;	goto ssse3_common;
     case UD_Ipinsrd: opf = pinsrd;	goto ssse3_common;
     case UD_Ipinsrq: opf = pinsrq;	goto ssse3_common;
+    case UD_Ipmaxud: opf = pmaxud;	goto ssse3_common;
+    case UD_Ipminud: opf = pminud;	goto ssse3_common;
 
 sse42_common:	
 
