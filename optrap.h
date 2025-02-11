@@ -125,7 +125,7 @@ static YMM VYMM13;
 static YMM VYMM14;
 static YMM VYMM15;
 
-int opemu_utrap(struct pt_regs *regs);
+int opemu_utrap_2(struct pt_regs *regs);
 
 int rex_ins(uint8_t *instruction, struct pt_regs *regs);
 int vex_ins(uint8_t *instruction, struct pt_regs *regs);

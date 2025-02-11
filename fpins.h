@@ -9,8 +9,8 @@
 #ifndef fpins_h
 #define fpins_h
 
-#include "opemu.h"
-#include "ssse3_priv.h"
+//#include "opemu.h"
+//#include "ssse3_priv.h"
 
 int getmxcsr(void);
 

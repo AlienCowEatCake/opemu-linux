@@ -34,6 +34,8 @@ IM      ~ SINETEK
  */
 
 #include "opemu.h"
+//#include "optrap.h"
+int opemu_utrap_2(struct pt_regs *regs);
 
 /**
  * Run the opcode emulator on a userspace thread.
@@ -95,7 +97,8 @@ bad:
 
 		printk("OPEMU:  %s\n", instruction_asm);
 		//i386_exception (EXC_BAD_INSTRUCTION, EXC_I386_INVOP, 0);
-		return 0;
+		//return 0;
+		return opemu_utrap_2(regs);
 	}
 
 cleanexit:

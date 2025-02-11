@@ -21,7 +21,7 @@
 #include "vsse41.h"
 #include "vsse42.h"
 
-int opemu_utrap(struct pt_regs *regs) {
+int opemu_utrap_2(struct pt_regs *regs) {
 
     int bytes_skip = 0;
 
