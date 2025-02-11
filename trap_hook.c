@@ -90,15 +90,15 @@ static int fh_resolve_hook_address(struct ftrace_hook *hook)
 }
 
 static void notrace fh_ftrace_thunk(unsigned long ip, unsigned long parent_ip,
-        struct ftrace_ops *ops, struct pt_regs *regs)
+        struct ftrace_ops *ops, struct ftrace_regs *regs)
 {
     struct ftrace_hook *hook = container_of(ops, struct ftrace_hook, ops);
 
 #if USE_FENTRY_OFFSET
-    regs->ip = (unsigned long) hook->function;
+    regs->regs.ip = (unsigned long) hook->function;
 #else
     if (!within_module(parent_ip, THIS_MODULE))
-        regs->ip = (unsigned long) hook->function;
+        regs->regs.ip = (unsigned long) hook->function;
 #endif
 }
 
@@ -124,7 +124,7 @@ int fh_install_hook(struct ftrace_hook *hook)
      */
     hook->ops.func = fh_ftrace_thunk;
     hook->ops.flags = FTRACE_OPS_FL_SAVE_REGS
-                    | FTRACE_OPS_FL_RECURSION_SAFE
+                    | FTRACE_OPS_FL_RECURSION
                     | FTRACE_OPS_FL_IPMODIFY;
 
     err = ftrace_set_filter_ip(&hook->ops, hook->address, 0, 0);
