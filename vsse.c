@@ -107,6 +107,7 @@ int vsse_instruction(struct pt_regs *regs,
                         _load_xmm(num_dst, &xmmres);
                     }
                 }
+                break;
             case 0x13: //VMOVLPS DST -> SRC
                 if (simd_prefix == 0) { //None
                     if (leading_opcode == 1) {//0F
@@ -115,6 +116,7 @@ int vsse_instruction(struct pt_regs *regs,
                         _load_maddr_from_xmm(rmaddrs, &xmmres, rm_size, regs);
                     }
                 }
+                break;
             case 0x16:
                 if (simd_prefix == 0) { //None
                     if (leading_opcode == 1) {//0F
@@ -127,6 +129,7 @@ int vsse_instruction(struct pt_regs *regs,
                         _load_xmm(num_dst, &xmmres);
                     }
                 }
+                break;
             case 0x17: //VMOVHPS DST -> SRC
                 if (simd_prefix == 0) { //None
                     if (leading_opcode == 1) {//0F
@@ -135,6 +138,7 @@ int vsse_instruction(struct pt_regs *regs,
                         _load_maddr_from_xmm(rmaddrs, &xmmres, rm_size, regs);
                     }
                 }
+                break;
 
             case 0x28: //VMOVAPS
                 if (simd_prefix == 0) { //None

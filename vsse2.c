@@ -1383,6 +1383,7 @@ int vsse2_instruction(struct pt_regs *regs,
                         _load_ymm(num_dst, &ymmres);
                     }
                 }
+                break;
             case 0xF6: //VPSADBW
                 if (simd_prefix == 1) { //66
                     if (leading_opcode == 1) {//0F
@@ -1889,6 +1890,7 @@ int vsse2_instruction(struct pt_regs *regs,
                         _load_ymm(num_dst, &ymmres);
                     }
                 }
+                break;
             case 0x68: //VPUNPCKHBW Byte
                 if (simd_prefix == 1) { //66
                     if (leading_opcode == 1) {//0F
