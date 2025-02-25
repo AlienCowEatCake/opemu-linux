@@ -349,64 +349,64 @@ int vex_ins(uint8_t *instruction, struct pt_regs *regs)
     //uint8_t modreg = (*modrm >> 3) & 0x7;
 
     // VAES Instruction set
-    ins_size = vaes_instruction(regs, vexreg, opcode, modrm, high_reg, high_index, high_base, reg_size, operand_size, leading_opcode, simd_prefix, bytep, ins_size, modbyte);
+    uint8_t ins_size_2 = vaes_instruction(regs, vexreg, opcode, modrm, high_reg, high_index, high_base, reg_size, operand_size, leading_opcode, simd_prefix, bytep, ins_size, modbyte);
 
     // AVX / AVX2 Instruction set
-    if (ins_size == 0) {
-        ins_size = avx_instruction(regs, vexreg, opcode, modrm, high_reg, high_index, high_base, reg_size, operand_size, leading_opcode, simd_prefix, bytep, ins_size, modbyte);
+    if (ins_size_2 == 0) {
+        ins_size_2 = avx_instruction(regs, vexreg, opcode, modrm, high_reg, high_index, high_base, reg_size, operand_size, leading_opcode, simd_prefix, bytep, ins_size, modbyte);
     }
 
     // AVX Gather Instruction set
-    if (ins_size == 0) {
-        ins_size = vgather_instruction(regs, vexreg, opcode, modrm, high_reg, high_index, high_base, reg_size, operand_size, leading_opcode, simd_prefix, bytep, ins_size, modbyte);
+    if (ins_size_2 == 0) {
+        ins_size_2 = vgather_instruction(regs, vexreg, opcode, modrm, high_reg, high_index, high_base, reg_size, operand_size, leading_opcode, simd_prefix, bytep, ins_size, modbyte);
     }
 
     // FMA Instruction set
-    if (ins_size == 0) {
-        ins_size = fma_instruction(regs, vexreg, opcode, modrm, high_reg, high_index, high_base, reg_size, operand_size, leading_opcode, simd_prefix, bytep, ins_size, modbyte);
+    if (ins_size_2 == 0) {
+        ins_size_2 = fma_instruction(regs, vexreg, opcode, modrm, high_reg, high_index, high_base, reg_size, operand_size, leading_opcode, simd_prefix, bytep, ins_size, modbyte);
     }
 
     // F16C Instruction set
-    if (ins_size == 0) {
-        ins_size = f16c_instruction(regs, vexreg, opcode, modrm, high_reg, high_index, high_base, reg_size, leading_opcode, simd_prefix, bytep, ins_size, modbyte);
+    if (ins_size_2 == 0) {
+        ins_size_2 = f16c_instruction(regs, vexreg, opcode, modrm, high_reg, high_index, high_base, reg_size, leading_opcode, simd_prefix, bytep, ins_size, modbyte);
     }
 
     // BMI1/2 Instruction set
-    if (ins_size == 0) {
-    	ins_size = bmi_instruction(regs, vexreg, opcode, modrm, high_reg, high_index, high_base, operand_size, leading_opcode, simd_prefix, bytep, ins_size, modbyte);
+    if (ins_size_2 == 0) {
+    	ins_size_2 = bmi_instruction(regs, vexreg, opcode, modrm, high_reg, high_index, high_base, operand_size, leading_opcode, simd_prefix, bytep, ins_size, modbyte);
     }
     
     // VSSE Instruction set
-    if (ins_size == 0) {
-        ins_size = vsse_instruction(regs, vexreg, opcode, modrm, high_reg, high_index, high_base, reg_size, operand_size, leading_opcode, simd_prefix, bytep, ins_size, modbyte);
+    if (ins_size_2 == 0) {
+        ins_size_2 = vsse_instruction(regs, vexreg, opcode, modrm, high_reg, high_index, high_base, reg_size, operand_size, leading_opcode, simd_prefix, bytep, ins_size, modbyte);
     }
 
     // VSSE2 Instruction set
-    if (ins_size == 0) {
-        ins_size = vsse2_instruction(regs, vexreg, opcode, modrm, high_reg, high_index, high_base, reg_size, operand_size, leading_opcode, simd_prefix, bytep, ins_size, modbyte);
+    if (ins_size_2 == 0) {
+        ins_size_2 = vsse2_instruction(regs, vexreg, opcode, modrm, high_reg, high_index, high_base, reg_size, operand_size, leading_opcode, simd_prefix, bytep, ins_size, modbyte);
     }
 
     // VSSE3 Instruction set
-    if (ins_size == 0) {
-        ins_size = vsse3_instruction(regs, vexreg, opcode, modrm, high_reg, high_index, high_base, reg_size, operand_size, leading_opcode, simd_prefix, bytep, ins_size, modbyte);
+    if (ins_size_2 == 0) {
+        ins_size_2 = vsse3_instruction(regs, vexreg, opcode, modrm, high_reg, high_index, high_base, reg_size, operand_size, leading_opcode, simd_prefix, bytep, ins_size, modbyte);
     }
 
     // VSSSE3 Instruction set
-    if (ins_size == 0) {
-        ins_size = vssse3_instruction(regs, vexreg, opcode, modrm, high_reg, high_index, high_base, reg_size, operand_size, leading_opcode, simd_prefix, bytep, ins_size, modbyte);
+    if (ins_size_2 == 0) {
+        ins_size_2 = vssse3_instruction(regs, vexreg, opcode, modrm, high_reg, high_index, high_base, reg_size, operand_size, leading_opcode, simd_prefix, bytep, ins_size, modbyte);
     }
 
     // VSSE4.1 Instruction set
-    if (ins_size == 0) {
-        ins_size = vsse41_instruction(regs, vexreg, opcode, modrm, high_reg, high_index, high_base, reg_size, operand_size, leading_opcode, simd_prefix, bytep, ins_size, modbyte);
+    if (ins_size_2 == 0) {
+        ins_size_2 = vsse41_instruction(regs, vexreg, opcode, modrm, high_reg, high_index, high_base, reg_size, operand_size, leading_opcode, simd_prefix, bytep, ins_size, modbyte);
     }
 
     // VSSE4.2 Instruction set
-    if (ins_size == 0) {
-        ins_size = vsse42_instruction(regs, vexreg, opcode, modrm, high_reg, high_index, high_base, reg_size, operand_size, leading_opcode, simd_prefix, bytep, ins_size, modbyte);
+    if (ins_size_2 == 0) {
+        ins_size_2 = vsse42_instruction(regs, vexreg, opcode, modrm, high_reg, high_index, high_base, reg_size, operand_size, leading_opcode, simd_prefix, bytep, ins_size, modbyte);
     }
 
-    return ins_size;
+    return ins_size_2;
 }
 
 /*********************************************************/

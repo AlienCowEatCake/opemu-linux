@@ -333,6 +333,8 @@ int avx_instruction(struct pt_regs *regs,
                 if (simd_prefix == 0) { //None
                     if (leading_opcode == 1) { //0F
                         vzeroupper(regs);
+                        /// @todo HACK: vzeroupper has no operands
+                        ins_size -= consumed;
                     }
                 }
                 break;
