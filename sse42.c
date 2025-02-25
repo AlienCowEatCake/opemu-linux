@@ -605,10 +605,7 @@ static void getmemoperand(ssse3_t *this, uint8_t *size, uint64_t *retval)
 
     address += disp;
 
-    if (this->op_obj->ring0)
-        retval[0] = *((uint64_t*)(address));
-    else
-        copy_from_user ((char*) &retval[0], (char*) address, 8);
+    copy_from_any_memory ((char*) &retval[0], (char*) address, 8, this->op_obj->ring0);
 }
 
 void pcmpistrm	(ssse3_t *this)

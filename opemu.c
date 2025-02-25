@@ -56,8 +56,23 @@ int opemu_utrap(struct pt_regs *regs)
 		code_stream = (const uint8_t*) ip;
 	}
 
+	uint8_t code_stream_2[15];
+	memset(code_stream_2, 0, sizeof(code_stream_2));
+	for(size_t i = 0; i < sizeof(code_stream_2); ++i)
+	{
+		unsigned char opcode;
+		if (user_mode(regs)) {
+			if (get_user(opcode, (unsigned char __user *) (code_stream + i)))
+				break;
+		} else {
+			if (get_kernel_nofault(opcode, (code_stream + i)))
+				break;
+		}
+		code_stream_2[i] = opcode;
+	}
+
 	ud_init(&ud_obj);
-	ud_set_input_buffer(&ud_obj, code_stream, 15);	// TODO dangerous
+	ud_set_input_buffer(&ud_obj, code_stream_2, sizeof(code_stream_2));
 	ud_set_mode(&ud_obj, 64);
 	ud_set_syntax(&ud_obj, UD_SYN_INTEL);
 	ud_set_vendor(&ud_obj, UD_VENDOR_ANY);
@@ -74,7 +89,7 @@ int opemu_utrap(struct pt_regs *regs)
 	op_obj.state32 = regs;
 	op_obj.state_flavor = (islongmode) ? SAVEDSTATE_64 : SAVEDSTATE_32;
 	op_obj.ud_obj = &ud_obj;
-	op_obj.ring0 = 0;
+	op_obj.ring0 = user_mode(regs) ? 0 : 1;
 
 	op_obj.dst64 = op_obj.dst32 = 0 ;
 

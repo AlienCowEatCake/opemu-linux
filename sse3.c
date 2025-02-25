@@ -43,9 +43,7 @@ int sse3_grab_operands(sse3_t *sse3_obj)
 
 			address += disp;
 
-			if (sse3_obj->op_obj->ring0)
-				sse3_obj->src.uint64[0] = * ((uint64_t*) (address));
-			else copy_from_user((char*) &sse3_obj->src.uint64[0], (char*) address, 8);
+			copy_from_any_memory((char*) &sse3_obj->src.uint64[0], (char*) address, 8, sse3_obj->op_obj->ring0);
 		}
 	} else {
 		_store_xmm (sse3_obj->udo_dst->base - UD_R_XMM0, &sse3_obj->dst.uint128);
@@ -71,9 +69,7 @@ int sse3_grab_operands(sse3_t *sse3_obj)
 
 			address += disp;
 
-			if (sse3_obj->op_obj->ring0)
-				sse3_obj->src.uint128 = * ((__uint128_t*) (address));
-			else copy_from_user((char*) &sse3_obj->src.uint128, (char*) address, 16);
+			copy_from_any_memory((char*) &sse3_obj->src.uint128, (char*) address, 16, sse3_obj->op_obj->ring0);
 		}
 	}
 

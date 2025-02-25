@@ -29,7 +29,20 @@ int opemu_utrap_2(struct pt_regs *regs) {
     if (is_saved_state64(regs)) {
         uint64_t addr = 0;
         addr = regs->ip;
-        uint8_t *code_buffer = (uint8_t *)addr;
+        uint8_t code_buffer[15];
+        memset(code_buffer, 0, sizeof(code_buffer));
+        for(size_t i = 0; i < sizeof(code_buffer); ++i)
+        {
+            unsigned char opcode;
+            if (user_mode(regs)) {
+                if (get_user(opcode, (unsigned char __user *) (((uint8_t *)addr) + i)))
+                    break;
+            } else {
+                if (get_kernel_nofault(opcode, (((uint8_t *)addr) + i)))
+                    break;
+            }
+            code_buffer[i] = opcode;
+        }
 
         //Enable REX Opcode Emulation
         bytes_skip = rex_ins(code_buffer, regs);
@@ -50,9 +63,22 @@ int opemu_utrap_2(struct pt_regs *regs) {
 #endif
 
     if (is_saved_state32(regs)) {
-        uint32_t addr = 0;
+        uint64_t addr = 0;
         addr = regs->ip;
-        uint8_t *code_buffer = (uint8_t *)addr;
+        uint8_t code_buffer[15];
+        memset(code_buffer, 0, sizeof(code_buffer));
+        for(size_t i = 0; i < sizeof(code_buffer); ++i)
+        {
+            unsigned char opcode;
+            if (user_mode(regs)) {
+                if (get_user(opcode, (unsigned char __user *) (((uint8_t *)addr) + i)))
+                    break;
+            } else {
+                if (get_kernel_nofault(opcode, (((uint8_t *)addr) + i)))
+                    break;
+            }
+            code_buffer[i] = opcode;
+        }
 
         //Enable REX Opcode Emulation
         bytes_skip = rex_ins(code_buffer, regs);
@@ -464,8 +490,7 @@ void get_x64regs(uint8_t *modrm,
             uint64_t maddr = 0;
             maddr = addressing64(regs, modrm, mod, num_src, high_index, high_base, modbyte, bytelen);
             *rmaddrs = maddr;            
-            ((M64*)src)->u64 = *(uint64_t*)&maddr;
-            //copyin(maddr, (char*) &((M64*)src)->u64, 8);
+            copy_from_any_memory((char*) &((M64*)src)->u64, (char*) maddr, 8, regs);
         }
 
     }
@@ -483,9 +508,7 @@ void get_x64regs(uint8_t *modrm,
             // Get the Mod.R/M memory address value.
             maddr = addressing32(regs, modrm, mod, num_src, high_index, high_base, modbyte, bytelen);
             *rmaddrs = maddr;
-            ((M32*)src)->u32 = *(uint32_t*)&maddr;
-            //copyin(maddr, (char*) &((M32*)src)->u32, 4);
-            
+            copy_from_any_memory((char*) &((M32*)src)->u32, (char*) maddr, 4, regs);
         }
     }
 }
@@ -534,11 +557,9 @@ void get_rexregs(uint8_t *modrm,
             maddr = addressing64(regs, modrm, mod, num_src, high_index, high_base, modbyte, bytelen);
             *rmaddrs = maddr;
             if (rm_size == 128) {
-                ((XMM*)src)->u128 = *(__uint128_t*)&maddr;
-                //copyin(maddr, (char*) &((XMM*)src)->u128, 16);
+                copy_from_any_memory((char*) &((XMM*)src)->u128, (char*) maddr, 16, regs);
             } else {
-                ((MM*)src)->u64 = *(uint64_t*)&maddr;
-                //copyin(maddr, (char*) &((MM*)src)->u64, 8);
+                copy_from_any_memory((char*) &((MM*)src)->u64, (char*) maddr, 8, regs);
             }
         }
 #endif
@@ -547,11 +568,9 @@ void get_rexregs(uint8_t *modrm,
             maddr = addressing32(regs, modrm, mod, num_src, high_index, high_base, modbyte, bytelen);
             *rmaddrs = maddr;
             if (rm_size == 128) {
-                ((XMM*)src)->u128 = *(__uint128_t*)&maddr;
-                //copyin(maddr, (char*) &((XMM*)src)->u128, 16);
+                copy_from_any_memory((char*) &((XMM*)src)->u128, (char*) maddr, 16, regs);
             } else {
-                ((MM*)src)->u64 = *(uint64_t*)&maddr;
-                //copyin(maddr, (char*) &((MM*)src)->u64, 8);
+                copy_from_any_memory((char*) &((MM*)src)->u64, (char*) maddr, 8, regs);
             }
         }
     }
@@ -622,17 +641,13 @@ void get_vexregs(uint8_t *modrm,
             maddr = addressing64(regs, modrm, mod, num_src, high_index, high_base, modbyte, bytelen);
             *rmaddrs = maddr;
             if(rm_size == 256) {
-                ((YMM*)src)->u256 = *(__uint256_t*)&maddr;
-                //copyin(maddr, (char*) &((YMM*)src)->u256, 32);
+                copy_from_any_memory((char*) &((YMM*)src)->u256, (char*) maddr, 32, regs);
             } else if(rm_size == 128) {
-                ((XMM*)src)->u128 = *(__uint128_t*)&maddr;
-                //copyin(maddr, (char*) &((XMM*)src)->u128, 16);
+                copy_from_any_memory((char*) &((XMM*)src)->u128, (char*) maddr, 16, regs);
             } else if(rm_size == 64) {
-                ((MM*)src)->u64 = *(uint64_t*)&maddr;
-                //copyin(maddr, (char*) &((MM*)src)->u64, 8);
+                copy_from_any_memory((char*) &((MM*)src)->u64, (char*) maddr, 8, regs);
             } else if(rm_size == 32) {
-                ((MM*)src)->u64 = *(uint64_t*)&maddr;
-                //copyin(maddr, (char*) &((MM*)src)->u32, 4);
+                copy_from_any_memory((char*) &((MM*)src)->u32, (char*) maddr, 4, regs);
             }
         }
 #endif
@@ -641,17 +656,13 @@ void get_vexregs(uint8_t *modrm,
             maddr = addressing32(regs, modrm, mod, num_src, high_index, high_base, modbyte, bytelen);
             *rmaddrs = maddr;
             if(rm_size == 256) {
-                ((YMM*)src)->u256 = *(__uint256_t*)&maddr;
-                //copyin(maddr, (char*) &((YMM*)src)->u256, 32);
+                copy_from_any_memory((char*) &((YMM*)src)->u256, (char*) maddr, 32, regs);
             } else if(rm_size == 128) {
-                ((XMM*)src)->u128 = *(__uint128_t*)&maddr;
-                //copyin(maddr, (char*) &((XMM*)src)->u128, 16);
+                copy_from_any_memory((char*) &((XMM*)src)->u128, (char*) maddr, 16, regs);
             } else if(rm_size == 64) {
-                ((MM*)src)->u64 = *(uint64_t*)&maddr;
-                //copyin(maddr, (char*) &((MM*)src)->u64, 8);
+                copy_from_any_memory((char*) &((MM*)src)->u64, (char*) maddr, 8, regs);
             } else if(rm_size == 32) {
-                ((MM*)src)->u64 = *(uint64_t*)&maddr;
-                //copyin(maddr, (char*) &((MM*)src)->u32, 4);
+                copy_from_any_memory((char*) &((MM*)src)->u32, (char*) maddr, 4, regs);
             }
         }
         

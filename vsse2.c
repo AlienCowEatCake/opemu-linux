@@ -212,8 +212,7 @@ int vsse2_instruction(struct pt_regs *regs,
                         uint64_t dest;
                         dest = regs->di; //Memory location
                         XMM var;
-                        //memcpy(&var.u128, &dest, 16);
-                        var.u128 = *(__uint128_t*)&dest;
+                        copy_from_any_memory((char*) &var.u128, (char*) dest, 16, regs);
                         vmaskmovdqu(xmmsrc, xmmdst, &xmmres, var);
                         rm_size = 128;
                        _load_maddr_from_xmm(dest, &xmmres, rm_size, regs);

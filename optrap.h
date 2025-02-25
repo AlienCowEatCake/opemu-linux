@@ -556,4 +556,28 @@ static inline void _load_m32 (uint8_t n, M32 *where, struct pt_regs *regs)
     }
 }
 
+/**
+ * Copy from user or kernel memory
+ */
+static inline long copy_from_any_memory_(void *dst, const void *src, size_t size, struct pt_regs *regs, const char *file, unsigned long long line)
+{
+    if (user_mode(regs)) {
+        unsigned long res = copy_from_user(dst, src, size);
+        if (unlikely(res)) {
+            printk("OPEMU: Failed to copy from user at %p for size %llu with result %lu in %s:%llu\n", src, (unsigned long long)size, res, file, line);
+            dump_stack();
+        }
+        return (long)res;
+    } else {
+        long res = copy_from_kernel_nofault(dst, src, size);
+        if (unlikely(res)) {
+            printk("OPEMU: Failed to copy from kernel at %p for size %llu with result %ld in %s:%llu\n", src, (unsigned long long)size, res, file, line);
+            dump_stack();
+        }
+        return res;
+    }
+}
+#define copy_from_any_memory(dst, src, size, regs) \
+    copy_from_any_memory_((dst), (src), (size), (regs), (__FILE__), (__LINE__))
+
 #endif /* optrap_h */
