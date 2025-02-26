@@ -80,6 +80,7 @@ int opemu_utrap(struct pt_regs *regs)
 	bytes_skip = ud_disassemble(&ud_obj);
 	if ( bytes_skip == 0 ) goto bad;
 	const uint32_t mnemonic = ud_insn_mnemonic(&ud_obj);
+	if ( mnemonic == UD_Iinvalid ) goto bad;
 	//printk("OPEMU:  %s\n", ud_insn_asm(&ud_obj));
 
 	int error = 0;
@@ -103,6 +104,13 @@ int opemu_utrap(struct pt_regs *regs)
 	
 	if (!error) goto cleanexit;
 
+	{
+		const char *instruction_asm;
+		instruction_asm = ud_insn_asm(&ud_obj);
+		printk("OPEMU:  %s\n", instruction_asm);
+		return opemu_utrap_2(regs);
+	}
+
 	/** fallthru **/
 bad:
 	{
@@ -111,9 +119,12 @@ bad:
 		instruction_asm = ud_insn_asm(&ud_obj);
 
 		printk("OPEMU:  %s\n", instruction_asm);
+		printk("OPEMU: invalid user opcode: %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
+				code_stream_2[0], code_stream_2[1], code_stream_2[2], code_stream_2[3], code_stream_2[4],
+				code_stream_2[5], code_stream_2[6], code_stream_2[7], code_stream_2[8], code_stream_2[9],
+				code_stream_2[10], code_stream_2[11], code_stream_2[12], code_stream_2[13], code_stream_2[14]);
 		//i386_exception (EXC_BAD_INSTRUCTION, EXC_I386_INVOP, 0);
-		//return 0;
-		return opemu_utrap_2(regs);
+		return 0;
 	}
 
 cleanexit:
