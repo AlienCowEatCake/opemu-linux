@@ -321,7 +321,7 @@ void roundss(ssse3_t *this)
 
 void ptest(ssse3_t *this)
 {
-	struct pt_regs *regs;
+	struct pt_regs *regs = this->op_obj->state;
     uint64_t FLAGS;
     FLAGS = regs->flags;
     
