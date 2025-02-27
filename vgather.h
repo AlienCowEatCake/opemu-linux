@@ -266,7 +266,7 @@ static inline void vpgatherqd256(XMM vsrc, YMM vindex, XMM *res, struct pt_regs 
     XMM MASK;
     XMM vaddr;
     
-    for (i = 0; i < 8; ++i) {
+    for (i = 0; i < 4; ++i) {
         mask_bit = vsrc.u32[i];
         cs = mask_bit >> 31 & 1;
         if (cs == 1) {
@@ -553,7 +553,7 @@ static inline void vgatherqps256(XMM vsrc, YMM vindex, XMM *res, struct pt_regs 
     XMM MASK;
     XMM vaddr;
     XMM tmp;
-    for (i = 0; i < 8; ++i) {
+    for (i = 0; i < 4; ++i) {
         mask_bit = vsrc.u32[i];
         cs = mask_bit >> 31 & 1;
         if (cs == 1) {
